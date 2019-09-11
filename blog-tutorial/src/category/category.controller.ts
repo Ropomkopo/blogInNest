@@ -1,6 +1,6 @@
-import { Controller, Get, Post, Res, Body, HttpStatus, Req, Patch, Param } from '@nestjs/common';
+import { Controller, Get, Post, Res, Body, HttpStatus, Req, Patch, Param, Inject } from '@nestjs/common';
 import { CategoryService } from './category.service';
-import { CreateCategoryDTO } from 'src/dto/create-category.dto';
+import { CreateCategoryDTO } from '../dto/create-category.dto';
 import { Category } from 'src/interfaces/category.interface';
 import { async } from 'rxjs/internal/scheduler/async';
 import { ApiImplicitParam } from '@nestjs/swagger';
@@ -9,17 +9,20 @@ import { ApiImplicitParam } from '@nestjs/swagger';
 @Controller('category')
 export class CategoryController {
     constructor(
-        private categoryService: CategoryService
+        @Inject('CategoryService') private categoryService: CategoryService
     ) { }
 
 
     @Get('/get')
     async getAll(@Res() res): Promise<Category[]> {
         const data = await this.categoryService.findAll()
-        return res.status(HttpStatus.CREATED).json(data)
+        return res.status(HttpStatus.OK).json(data)
     }
     @Post('/create')
     async creat(@Res() res, @Body() createCategoryData: CreateCategoryDTO): Promise<Category> {
+        if(!createCategoryData.name) {
+            return res.status(HttpStatus.BAD_REQUEST).json({})
+        }
         const data = await this.categoryService.create(createCategoryData);
         return res.status(HttpStatus.CREATED).json(data)
     }

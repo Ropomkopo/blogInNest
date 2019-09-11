@@ -6,7 +6,9 @@ import { CreateCategoryDTO } from '../dto/create-category.dto';
 
 @Injectable()
 export class CategoryService {
-  constructor(@InjectModel('Category') private readonly categoryModel: Model<Category>) { }
+  constructor(
+    @InjectModel('Category') private readonly categoryModel: Model<Category>
+    ) { }
 
   async create(createCategory: CreateCategoryDTO): Promise<Category> {
     const createdCategory = new this.categoryModel(createCategory);
